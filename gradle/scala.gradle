@@ -15,6 +15,22 @@
  */
 apply plugin: 'scala'
 
+compileScala {
+    scalaCompileOptions.useCompileDaemon = true
+
+    // optionally specify host and port of the daemon:
+    // scalaCompileOptions.daemonServer = "localhost:4243"
+}
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.useAnt = true
+
+    configure(scalaCompileOptions.forkOptions) {
+        memoryMaximumSize = '1g'
+        jvmArgs = ['-XX:MaxPermSize=512m']
+    }
+}
+
 //compileGroovy {
 //    groovyOptions.configurationScript = file( "$rootDir/gradle/groovyCompilerConfiguration.groovy" )
 //}
