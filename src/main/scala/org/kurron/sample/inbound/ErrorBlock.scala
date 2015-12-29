@@ -13,30 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kurron.sample.inbound
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
- * Optional error section of the control.
- */
-class ErrorBlock {
-
-    /**
-     * Number uniquely describing the error conditions.
-     **/
-    @JsonProperty( 'code' )
-    int code
-
-    /**
-     * Details the error condition.
-     **/
-    @JsonProperty( 'message' )
-    String message
-
-    /**
-     * Details the error condition in language targeted towards the developer.
-     **/
-    @JsonProperty( 'developer-message' )
-    String developerMessage
+  * Optional error section of the control.
+  */
+class ErrorBlock( @JsonProperty( "code" ) var code: Int,
+                  @JsonProperty( "message" ) var message: String,
+                  @JsonProperty( "developer-message" ) var developerMessage: String ) {
+  // empty
 }

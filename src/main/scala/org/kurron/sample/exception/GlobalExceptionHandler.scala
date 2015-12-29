@@ -88,9 +88,9 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler with Feedbac
     * @param e the error.
     * @return the constructed response entity, containing details about the error.
     */
-  @ExceptionHandler( AbstractError )
-  def  handleApplicationException( e: AbstractError ) : ResponseEntity[HypermediaControl] = {
-    def control = new HypermediaControl( e.getHttpStatus.value )
+  @ExceptionHandler( Array( classOf[AbstractError] )
+  def handleApplicationException( e: AbstractError ) = {
+    val control = new HypermediaControl( e.getHttpStatus.value )
     control.setErrorBlock( new ErrorBlock( e.getCode, e.getMessage, e.getDeveloperMessage ) )
     wrapInResponseEntity( control, e.getHttpStatus )
   }
@@ -100,9 +100,9 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler with Feedbac
     * @param throwable non-application error.
     * @return control that contains as much data about the error that is available to us.
     */
-  @ExceptionHandler( Throwable )
-  def  handleSystemException( throwable: Throwable ): ResponseEntity[HypermediaControl] = {
-    def control = new HypermediaControl( HttpStatus.INTERNAL_SERVER_ERROR.value )
+  @ExceptionHandler( Array( classOf[Throwable] )
+  def handleSystemException( throwable: Throwable ): ResponseEntity[HypermediaControl] = {
+    val control = new HypermediaControl( HttpStatus.INTERNAL_SERVER_ERROR.value )
     val errorBlock = new ErrorBlock( LoggingContext.GENERIC_ERROR.getCode,
                                      throwable.getMessage,
                                     "Indicates that the exception was not handled explicitly and is being handled as a generic error" )
