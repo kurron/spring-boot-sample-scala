@@ -41,6 +41,7 @@ apply plugin: 'build-announcements'
 
 apply from: "$rootDir/gradle/repositories.gradle"
 apply from: "$rootDir/gradle/version.gradle"
+apply from: "$rootDir/gradle/scala.gradle"
 apply from: "$rootDir/gradle/groovy.gradle"
 apply from: "$rootDir/gradle/io-platform.gradle"
 apply from: "$rootDir/gradle/boot.gradle"
@@ -56,6 +57,7 @@ apply from: "$rootDir/gradle/conflicts.gradle"
 apply from: "$rootDir/gradle/docker.gradle"
 
 dependencies {
+    compile "org.scala-lang:scala-library-all:${scalaVersion}"
     compile "org.codehaus.groovy:groovy-all:${groovyVersion}:indy"
     compile "org.kurron:tools-groovy:${toolsGroovyVersion}"
     runtime "net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}"
