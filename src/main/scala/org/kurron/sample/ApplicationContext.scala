@@ -21,7 +21,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
-import org.springframework.web.client.{AsyncRestTemplate, RestTemplate}
+import org.springframework.http.client.ClientHttpResponse
+import org.springframework.web.client.{AsyncRestTemplate, ResponseErrorHandler, RestTemplate}
 /**
   * This is the main entry into the application. Running from the command-line using embedded Tomcat will invoke
   * the main() method.
@@ -55,19 +56,21 @@ class ApplicationContext {
 
   @Bean
   def asyncRestTemplate() : AsyncRestTemplate = {
-//    def errorHandler = [hasError: { false } ] as ResponseErrorHandler
     def bean = new AsyncRestTemplate()
-//    bean.errorHandler = errorHandler
+    bean.setErrorHandler( new NoOpErrorHandler() )
     bean
   }
 
   @Bean
   def restTemplate(): RestTemplate = {
-//    def errorHandler = [hasError: { false } ] as ResponseErrorHandler
     def bean = new RestTemplate()
-//    bean.errorHandler = errorHandler
+    bean.setErrorHandler( new NoOpErrorHandler() )
     bean
   }
 }
 
+class NoOpErrorHandler extends ResponseErrorHandler {
+  override def hasError(response: ClientHttpResponse): Boolean = false
 
+  override def handleError(response: ClientHttpResponse): Unit = {}
+}

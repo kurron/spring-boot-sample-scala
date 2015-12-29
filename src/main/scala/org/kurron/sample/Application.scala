@@ -19,8 +19,9 @@ package org.kurron.sample
 import org.springframework.boot.SpringApplication
 
 /**
-  * We need this because Scala does not have the notion of a static method.
+  * We need this because Scala does not have the notion of a static method.  We use
+  * Scala's notion of a singleton object instead.
   */
 object Application extends App {
-  SpringApplication.run( Array( classOf[ApplicationContext] ) )
+  SpringApplication.run( Array( classOf[ApplicationContext], args ) )
 }
