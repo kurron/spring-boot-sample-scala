@@ -1,0 +1,7 @@
+${projectName}:
+    build: .
+    labels:
+        org.kurron.built-on: "${generated}"
+        org.kurron.branch: "${branch}"
+    container_name: "${projectName}"
+    net: "host"
