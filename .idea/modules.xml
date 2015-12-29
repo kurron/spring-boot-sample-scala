@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/spring-boot-sample-groovy.iml" filepath="$PROJECT_DIR$/spring-boot-sample-groovy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring-boot-sample-scala.iml" filepath="$PROJECT_DIR$/spring-boot-sample-scala.iml" />
     </modules>
   </component>
 </project>
