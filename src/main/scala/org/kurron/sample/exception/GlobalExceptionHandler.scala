@@ -44,21 +44,18 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler with Feedbac
     feedbackProvider
   }
 
-  override def handleExceptionInternal(e: Exception,
-                                       body: scala.Any,
-                                       headers: HttpHeaders,
-                                       status: HttpStatus,
-                                       request: WebRequest): ResponseEntity[HypermediaControl] = {
+  //I'm not liking the fact that Scala is forcing me to use ResponseEntity[AnyRef] instead of ResponseEntity[HypermediaControl]
+  override def handleExceptionInternal(ex: Exception, body: scala.Any, headers: HttpHeaders, status: HttpStatus, request: WebRequest): ResponseEntity[AnyRef] = {
     // I couldn't get a handler specific to MethodArgumentNotValidException bound. Spring says it is ambiguous!
-    e match {
+    ex match {
       case validationException: MethodArgumentNotValidException =>
         handleValidationException(validationException)
       case _ =>
-        getFeedbackProvider.sendFeedback(LoggingContext.GENERIC_ERROR, e.getMessage)
+        getFeedbackProvider.sendFeedback(LoggingContext.GENERIC_ERROR, ex.getMessage)
         val control = new HypermediaControl( status.value() )
         control.errorBlock = new ErrorBlock( LoggingContext.GENERIC_ERROR.getCode,
-                                             e.getMessage,
-                                            "Indicates that the exception was not handled explicitly and is being handled as a generic error")
+          ex.getMessage,
+          "Indicates that the exception was not handled explicitly and is being handled as a generic error")
         wrapInResponseEntity(control, status, headers)
     }
   }
@@ -69,7 +66,7 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler with Feedbac
     * @return the constructed response entity, containing details about the error.
     */
   //    @ExceptionHandler( MethodArgumentNotValidException )
-  def handleValidationException( e: MethodArgumentNotValidException  ) : ResponseEntity[HypermediaControl] = {
+  def handleValidationException( e: MethodArgumentNotValidException  ) : ResponseEntity[AnyRef] = {
     val errors = e.getBindingResult.getFieldErrors
     val field = errors.head.getField
     val message = errors.head.getDefaultMessage
@@ -99,7 +96,7 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler with Feedbac
     * @return control that contains as much data about the error that is available to us.
     */
   @ExceptionHandler( Array( classOf[Throwable] ) )
-  def handleSystemException( throwable: Throwable ): ResponseEntity[HypermediaControl] = {
+  def handleSystemException( throwable: Throwable ): ResponseEntity[AnyRef] = {
     val control = new HypermediaControl( HttpStatus.INTERNAL_SERVER_ERROR.value )
     control.errorBlock = new ErrorBlock( LoggingContext.GENERIC_ERROR.getCode,
                                          throwable.getMessage,
@@ -116,7 +113,7 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler with Feedbac
     */
   def wrapInResponseEntity( control: HypermediaControl,
                             status:  HttpStatus,
-                            headers: HttpHeaders = new HttpHeaders() ): ResponseEntity[HypermediaControl] = {
+                            headers: HttpHeaders = new HttpHeaders() ): ResponseEntity[AnyRef] = {
     new ResponseEntity( control, headers, status )
   }
 
