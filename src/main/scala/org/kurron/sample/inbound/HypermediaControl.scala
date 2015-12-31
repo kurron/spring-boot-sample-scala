@@ -21,8 +21,6 @@ import javax.validation.Valid
 import com.fasterxml.jackson.annotation.{JsonInclude, JsonProperty}
 import org.springframework.http.MediaType
 
-import scala.beans.BeanProperty
-
 /**
   * The hypermedia REST control for the HID resource.  Can be serialized into JSON.
   */
@@ -34,14 +32,13 @@ class HypermediaControl( @JsonProperty( "http-code" ) val httpCode: Int ) {
     */
   @Valid
   @JsonProperty( "items" )
-  var items:List[Data]
+  var items:List[Data] = null
 
   /**
     * An optional block that is only populated after an error occurs.
     */
   @JsonProperty( "error" )
-  @BeanProperty
-  var errorBlock: ErrorBlock
+  var errorBlock: ErrorBlock = null
 
 }
 

@@ -20,8 +20,6 @@ import javax.validation.constraints.NotNull
 
 import com.fasterxml.jackson.annotation.{JsonInclude, JsonProperty}
 
-import scala.beans.BeanProperty
-
 /**
   * Optional data section of the control.
   */
@@ -31,11 +29,7 @@ class Data( @NotNull @JsonProperty( "knownLanguage" ) var knownLanguage: String,
             @NotNull @JsonProperty( "side1" ) var side1: String,
             @NotNull @JsonProperty( "side2" ) var side2: String ) {
 
-  /**
-    * The calculated hash id of the card.
-    **/
-  @BeanProperty
   @JsonProperty( "hid" )
-  var hid: String
+  var hid: String = null
 
 }

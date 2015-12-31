@@ -51,15 +51,14 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler with Feedbac
                                        request: WebRequest): ResponseEntity[HypermediaControl] = {
     // I couldn't get a handler specific to MethodArgumentNotValidException bound. Spring says it is ambiguous!
     e match {
-      case validException: MethodArgumentNotValidException =>
-        handleValidationException(validException)
+      case validationException: MethodArgumentNotValidException =>
+        handleValidationException(validationException)
       case _ =>
         getFeedbackProvider.sendFeedback(LoggingContext.GENERIC_ERROR, e.getMessage)
         val control = new HypermediaControl( status.value() )
-        val errorBlock = new ErrorBlock( LoggingContext.GENERIC_ERROR.getCode,
-                                         e.getMessage,
-                                         "Indicates that the exception was not handled explicitly and is being handled as a generic error")
-        control.setErrorBlock(errorBlock)
+        control.errorBlock = new ErrorBlock( LoggingContext.GENERIC_ERROR.getCode,
+                                             e.getMessage,
+                                            "Indicates that the exception was not handled explicitly and is being handled as a generic error")
         wrapInResponseEntity(control, status, headers)
     }
   }
@@ -76,10 +75,9 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler with Feedbac
     val message = errors.head.getDefaultMessage
     getFeedbackProvider.sendFeedback( LoggingContext.INVALID_FIELD, field, message )
     val control = new HypermediaControl( HttpStatus.BAD_REQUEST.value() )
-    val errorBlock = new ErrorBlock( LoggingContext.INVALID_FIELD.getCode,
-                                     "Request failed validation.",
-                                     "The field ${field} ${message}. Please correct your request and try again." )
-    control.setErrorBlock( errorBlock )
+    control.errorBlock = new ErrorBlock( LoggingContext.INVALID_FIELD.getCode,
+                                         "Request failed validation.",
+                                         "The field ${field} ${message}. Please correct your request and try again." )
     wrapInResponseEntity( control, HttpStatus.BAD_REQUEST)
   }
 
@@ -91,7 +89,7 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler with Feedbac
   @ExceptionHandler( Array( classOf[AbstractError] ) )
   def handleApplicationException( e: AbstractError ) = {
     val control = new HypermediaControl( e.getHttpStatus.value )
-    control.setErrorBlock( new ErrorBlock( e.getCode, e.getMessage, e.getDeveloperMessage ) )
+    control.errorBlock = new ErrorBlock( e.getCode, e.getMessage, e.getDeveloperMessage )
     wrapInResponseEntity( control, e.getHttpStatus )
   }
 
@@ -103,10 +101,9 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler with Feedbac
   @ExceptionHandler( Array( classOf[Throwable] ) )
   def handleSystemException( throwable: Throwable ): ResponseEntity[HypermediaControl] = {
     val control = new HypermediaControl( HttpStatus.INTERNAL_SERVER_ERROR.value )
-    val errorBlock = new ErrorBlock( LoggingContext.GENERIC_ERROR.getCode,
-                                     throwable.getMessage,
-                                    "Indicates that the exception was not handled explicitly and is being handled as a generic error" )
-    control.setErrorBlock( errorBlock )
+    control.errorBlock = new ErrorBlock( LoggingContext.GENERIC_ERROR.getCode,
+                                         throwable.getMessage,
+                                         "Indicates that the exception was not handled explicitly and is being handled as a generic error" )
     wrapInResponseEntity( control, HttpStatus.INTERNAL_SERVER_ERROR )
   }
 
