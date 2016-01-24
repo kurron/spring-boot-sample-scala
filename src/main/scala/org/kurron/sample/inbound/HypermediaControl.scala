@@ -19,13 +19,14 @@ package org.kurron.sample.inbound
 import javax.validation.Valid
 
 import com.fasterxml.jackson.annotation.{JsonInclude, JsonProperty}
+import org.springframework.hateoas.ResourceSupport
 import org.springframework.http.MediaType
 
 /**
   * The hypermedia REST control for the HID resource.  Can be serialized into JSON.
   */
 @JsonInclude( JsonInclude.Include.NON_NULL )
-class HypermediaControl( @JsonProperty( "http-code" ) val httpCode: Int ) {
+class HypermediaControl( @JsonProperty( "http-code" ) val httpCode: Int ) extends ResourceSupport {
 
   /**
     * Required block that contains both request and response information.

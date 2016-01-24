@@ -17,13 +17,14 @@
 package org.kurron.sample.inbound
 
 import java.util.Optional
+import java.util.concurrent.ThreadLocalRandom
 
 import org.kurron.feedback.AbstractFeedbackAware
 import org.kurron.stereotype.InboundRestGateway
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.actuate.metrics.CounterService
-import org.springframework.http.{HttpHeaders, ResponseEntity, HttpStatus}
-import org.springframework.web.bind.annotation.{RequestMethod, RequestMapping}
+import org.springframework.http.{HttpHeaders, HttpStatus, ResponseEntity}
+import org.springframework.web.bind.annotation.{RequestHeader, RequestMapping}
 import org.springframework.web.util.UriComponentsBuilder
 
 /**
@@ -33,9 +34,10 @@ import org.springframework.web.util.UriComponentsBuilder
 @RequestMapping( value = Array( "/hash-id" ) )
 class RestInboundGateway( @Autowired val counterService: CounterService ) extends AbstractFeedbackAware {
 
-  @RequestMapping( method = Array( RequestMethod.GET ), produces = Array( HypermediaControl.JSON_MIME_TYPE ) )
-  ResponseEntity[HypermediaControl] apiDiscovery( @RequestHeader( "X-Correlation-Id" ) Optional[String] correlationID,
-  UriComponentsBuilder builder ) {
+//  @RequestMapping( method = Array( RequestMethod.GET ), produces = Array( HypermediaControl.JSON_MIME_TYPE ) )
+//  ResponseEntity[HypermediaControl] apiDiscovery( @RequestHeader( "X-Correlation-Id" ) Optional[String] correlationID, UriComponentsBuilder builder ) {
+/*
+    ResponseEntity[HypermediaControl] apiDiscovery( String correlationID, UriComponentsBuilder builder ) {
     counterService.increment( "gateway.api-discovery" )
 
     def loggingID = correlationID.orElse( randomHexString() )
@@ -45,5 +47,26 @@ class RestInboundGateway( @Autowired val counterService: CounterService ) extend
     headers.add( CustomHttpHeaders.X_CORRELATION_ID, loggingID )
 
     new ResponseEntity[HypermediaControl]( response, headers, HttpStatus.OK )
+  }
+*/
+  def apiDiscovery( @RequestHeader( "X-Correlation-Id" ) correlationID: Optional[String], builder: UriComponentsBuilder ): ResponseEntity[HypermediaControl] = {
+    counterService.increment( "gateway.api-discovery" )
+    def loggingID = correlationID.orElse( randomHexString() )
+    def response = new HypermediaControl( httpCode = HttpStatus.OK.value() )
+    injectLinks( builder, response )
+    def headers = new HttpHeaders()
+    headers.add( CustomHttpHeaders.X_CORRELATION_ID, loggingID )
+
+    new ResponseEntity[HypermediaControl]( response, headers, HttpStatus.OK )
+  }
+
+  private def injectLinks( builder: UriComponentsBuilder,  response: HypermediaControl ) = {
+    response.add( selfLink( builder ) )
+    response.add( apiLink( builder ) )
+    response.add( discoveryLink( builder ) )
+  }
+
+  def randomHexString(): String = {
+    Integer.toHexString( ThreadLocalRandom.current().nextInt( Integer.MAX_VALUE ) )
   }
 }
