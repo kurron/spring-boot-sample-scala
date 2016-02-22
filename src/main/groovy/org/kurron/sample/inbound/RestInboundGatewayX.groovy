@@ -43,7 +43,7 @@ import org.springframework.web.util.UriComponentsBuilder
  */
 @InboundRestGateway
 @RequestMapping( value = '/hash-id' )
-class RestInboundGateway extends AbstractFeedbackAware implements GenerationAbility {
+class RestInboundGatewayX extends AbstractFeedbackAware implements GenerationAbility {
 
     /**
      * Used to track counts.
@@ -51,7 +51,7 @@ class RestInboundGateway extends AbstractFeedbackAware implements GenerationAbil
     private final CounterService counterService
 
     @Autowired
-    RestInboundGateway( final CounterService aCounterService ) {
+    RestInboundGatewayX( final CounterService aCounterService ) {
         counterService = aCounterService
     }
 

@@ -34,7 +34,7 @@ class RestInboundGatewayUnitTest extends Specification implements GenerationAbil
     static final String URI = '/hash-id'
 
     def counter = Stub( CounterService )
-    def sut = new RestInboundGateway( counter )
+    def sut = new RestInboundGatewayX( counter )
     def mockMvc = MockMvcBuilders.standaloneSetup( sut ).build()
     def mapper = new ObjectMapper()
 

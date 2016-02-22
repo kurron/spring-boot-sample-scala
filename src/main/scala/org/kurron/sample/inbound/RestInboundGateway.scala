@@ -23,6 +23,7 @@ import org.kurron.feedback.AbstractFeedbackAware
 import org.kurron.stereotype.InboundRestGateway
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.actuate.metrics.CounterService
+import org.springframework.hateoas.{Link, UriTemplate}
 import org.springframework.http.{HttpHeaders, HttpStatus, ResponseEntity}
 import org.springframework.web.bind.annotation.{RequestHeader, RequestMapping}
 import org.springframework.web.util.UriComponentsBuilder
@@ -64,6 +65,21 @@ class RestInboundGateway( @Autowired val counterService: CounterService ) extend
     response.add( selfLink( builder ) )
     response.add( apiLink( builder ) )
     response.add( discoveryLink( builder ) )
+  }
+
+  private def selfLink(  builder: UriComponentsBuilder ) : Link = {
+    def selfBuilder = UriComponentsBuilder.fromUri( builder.build().toUri )
+    new Link( new UriTemplate( selfBuilder.path( "/hash-id" ) .build().toUriString ), "self" )
+  }
+
+  private def apiLink( builder: UriComponentsBuilder  ) : Link = {
+    def docsBuilder = UriComponentsBuilder.fromUri( builder.build().toUri )
+    new Link( new UriTemplate( docsBuilder.path( "/docs/index.html" ).build().toUriString ), "api-docs" )
+  }
+
+  private def discoveryLink( builder: UriComponentsBuilder  ) : Link = {
+    def discoveryBuilder = UriComponentsBuilder.fromUri( builder.build().toUri )
+    new Link( new UriTemplate( discoveryBuilder.path( "/hash-id" ) .build().toUriString ), "api-discovery" )
   }
 
   def randomHexString(): String = {
