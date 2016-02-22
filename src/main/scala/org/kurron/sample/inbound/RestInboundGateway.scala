@@ -35,21 +35,6 @@ import org.springframework.web.util.UriComponentsBuilder
 @RequestMapping( value = Array( "/hash-id" ) )
 class RestInboundGateway( @Autowired val counterService: CounterService ) extends AbstractFeedbackAware {
 
-//  @RequestMapping( method = Array( RequestMethod.GET ), produces = Array( HypermediaControl.JSON_MIME_TYPE ) )
-//  ResponseEntity[HypermediaControl] apiDiscovery( @RequestHeader( "X-Correlation-Id" ) Optional[String] correlationID, UriComponentsBuilder builder ) {
-/*
-    ResponseEntity[HypermediaControl] apiDiscovery( String correlationID, UriComponentsBuilder builder ) {
-    counterService.increment( "gateway.api-discovery" )
-
-    def loggingID = correlationID.orElse( randomHexString() )
-    def response = new HypermediaControl( httpCode: HttpStatus.OK.value(  ) )
-    injectLinks( builder, response )
-    def headers = new HttpHeaders()
-    headers.add( CustomHttpHeaders.X_CORRELATION_ID, loggingID )
-
-    new ResponseEntity[HypermediaControl]( response, headers, HttpStatus.OK )
-  }
-*/
   def apiDiscovery( @RequestHeader( "X-Correlation-Id" ) correlationID: Optional[String], builder: UriComponentsBuilder ): ResponseEntity[HypermediaControl] = {
     counterService.increment( "gateway.api-discovery" )
     def loggingID = correlationID.orElse( randomHexString() )
