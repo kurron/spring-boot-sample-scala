@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015. Ronald D. Kurr kurr@jvmguy.com
+ * Copyright (c) 2016. Ronald D. Kurr kurr@jvmguy.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kurron.sample.inbound
 
 /**
- * Contains custom HTTP header names.
- */
-class CustomHttpHeaders {
+  * Contains custom HTTP header names.
+  */
+object CustomHttpHeaders {
 
-    /**
-     * Private constructor, to prevent instantiation.
-     */
-    private CustomHttpHeaders() { }
-
-    /**
-     * The correlation id (a.k.a. work-unit) header, useful in stitching together work being done by the server.
-     */
-    public static final String X_CORRELATION_ID = 'X-Correlation-Id'
+  val X_CORRELATION_ID: String = "X-Correlation-Id"
 }

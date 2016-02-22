@@ -22,7 +22,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.kurron.feedback.AbstractFeedbackAware
 import org.kurron.feedback.exceptions.PreconditionFailedError
 import org.kurron.sample.feeback.LoggingContext
-import org.kurron.sample.inbound.CustomHttpHeaders
+import org.kurron.sample.inbound.CustomHttpHeaders.X_CORRELATION_ID
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -42,11 +42,11 @@ class CorrelationIdHandlerInterceptor( @Autowired private val configuration: App
   override def afterCompletion(request: HttpServletRequest, response: HttpServletResponse, handler: scala.Any, ex: Exception): Unit = {}
 
   override def preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: scala.Any): Boolean = {
-    var correlationId = request.getHeader( CustomHttpHeaders.X_CORRELATION_ID )
+    var correlationId = request.getHeader( X_CORRELATION_ID )
     if ( null == correlationId ) {
       if ( configuration.requireCorrelationId ) {
-          getFeedbackProvider.sendFeedback( LoggingContext.PRECONDITION_FAILED, CustomHttpHeaders.X_CORRELATION_ID )
-        throw new PreconditionFailedError( LoggingContext.PRECONDITION_FAILED, CustomHttpHeaders.X_CORRELATION_ID )
+          getFeedbackProvider.sendFeedback( LoggingContext.PRECONDITION_FAILED, X_CORRELATION_ID )
+        throw new PreconditionFailedError( LoggingContext.PRECONDITION_FAILED, X_CORRELATION_ID )
       } else {
         correlationId = UUID.randomUUID().toString
         getFeedbackProvider.sendFeedback( LoggingContext.MISSING_CORRELATION_ID, correlationId )
