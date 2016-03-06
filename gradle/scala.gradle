@@ -16,7 +16,7 @@
 apply plugin: 'scala'
 
 compileScala {
-    scalaCompileOptions.useCompileDaemon = true
+    scalaCompileOptions.useCompileDaemon = false
 
     // optionally specify host and port of the daemon:
     // scalaCompileOptions.daemonServer = "localhost:4243"
