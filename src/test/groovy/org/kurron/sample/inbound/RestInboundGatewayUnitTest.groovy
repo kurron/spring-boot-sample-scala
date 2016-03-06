@@ -44,9 +44,9 @@ class RestInboundGatewayUnitTest extends Specification implements GenerationAbil
         def payload = mapper.writeValueAsString( request )
         def requestBuilder = MockMvcRequestBuilders.put( URI )
                                                    .content( payload )
-                                                   .contentType( HypermediaControl.JSON_MEDIA_TYPE )
+                                                   .contentType( HypermediaControl.JSON_MEDIA_TYPE() )
                                                    .header( 'Content-Length', payload.bytes.length )
-                                                   .header( CustomHttpHeaders.X_CORRELATION_ID, randomHexString() )
+                                                   .header( CustomHttpHeaders.X_CORRELATION_ID(), randomHexString() )
         when: 'the POST request is made'
         def result = mockMvc.perform( requestBuilder ).andReturn()
 
@@ -54,12 +54,12 @@ class RestInboundGatewayUnitTest extends Specification implements GenerationAbil
         result.response.status == HttpStatus.OK.value()
 
         and: 'the response content type is set'
-        result.response.contentType == HypermediaControl.JSON_MIME_TYPE
+        result.response.contentType == HypermediaControl.JSON_MIME_TYPE()
 
         and: 'the response contains a HID for each item sent'
         def response = mapper.readValue( result.response.contentAsByteArray, HypermediaControl )
-        request.items.size() == response.items.size()
-        response.items.every { it.hid }
+        request.items().size() == response.items().size()
+        response.items().every { it.hid }
     }
 
     HypermediaControl buildControl() {
