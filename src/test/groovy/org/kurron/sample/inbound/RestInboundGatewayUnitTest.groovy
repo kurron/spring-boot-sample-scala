@@ -64,8 +64,10 @@ class RestInboundGatewayUnitTest extends Specification implements GenerationAbil
 
     HypermediaControl buildControl() {
         def data = (1..2).collect {
-            new Data( knownLanguage: randomHexString(), learningLanguage: randomHexString(), side1: randomHexString(), side2: randomHexString())
-        }
-        new HypermediaControl(  items: data )
+            new Data( randomHexString(), randomHexString(), randomHexString(), randomHexString())
+        }.toScalaList()
+        def control = new HypermediaControl( HttpStatus.OK.value() )
+        control.items = data
+        control
     }
 }

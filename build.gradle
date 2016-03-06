@@ -59,6 +59,9 @@ apply from: "$rootDir/gradle/docker.gradle"
 dependencies {
     compile "org.scala-lang:scala-library-all:${scalaVersion}"
     compile "org.codehaus.groovy:groovy-all:${groovyVersion}:indy"
+    compile ( "com.wiredforcode:groovy-scala-extension-module:${grovyScalaExtensionVersion}" ) {
+        exclude module: 'groovy-all'
+    }
     compile "org.kurron:tools-groovy:${toolsGroovyVersion}"
     runtime "net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}"
 }
